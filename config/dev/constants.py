@@ -21,10 +21,10 @@ Summary:
 TABLE_SUMMARY = """Table containing relationship details between nodes, including start and end node IDs, 
 relationship type, status, periods, qualifiers, quantifiers, registration information, and validation sources.
 Following is the Foreign key ralationship
-- FOREIGN KEY Relationship_StartNode_NodeID REFERENCES EntityInformation(LEI),
-- FOREIGN KEY Relationship_EndNode_NodeID REFERENCES EntityInformation(LEI).
+- FOREIGN KEY Relationship_Details REFERENCES LEI_Entity_Details(LEI),
+- FOREIGN KEY Relationship_EndNode_NodeID REFERENCES LEI_Entity_Details(LEI).
 
-Relationship_RelationshipType defines the relationship between Relationship_StartNode_NodeID and Relationship_EndNode_NodeID.
+Relationship_RelationshipType defines the relationship between Relationship_Details and Relationship_EndNode_NodeID.
 Following are the avilable relations type:
 - 'IS_ULTIMATELY_CONSOLIDATED_BY' defines ultimate child,
 - `IS_DIRECTLY_CONSOLIDATED_BY` defines direct child
@@ -79,10 +79,10 @@ Use these real examples for complex queries:
 Example 1:
 Question: Give me the direct children for <entity name>?
 SQLQuery: SELECT Entity_LegalName AS direct_child_name
-FROM EntityInformation ent
-JOIN Relationship_StartNode_NodeID rel ON ent.LEI = rel.Relationship_StartNode_NodeID
+FROM LEI_Entity_Details ent
+JOIN Relationship_Details rel ON ent.LEI = rel.Relationship_Details
 WHERE rel.Relationship_RelationshipType = 'IS_DIRECTLY_CONSOLIDATED_BY'
-AND rel.Relationship_EndNode_NodeID = (SELECT LEI FROM EntityInformation WHERE Entity_LegalName = 'A');
+AND rel.Relationship_EndNode_NodeID = (SELECT LEI FROM LEI_Entity_Details WHERE Entity_LegalName = 'A');
 
 SQLResult:
 direct_child_name         | avg_volte_accessibility
@@ -92,8 +92,8 @@ Answer: Direct child of <entity_name> are as <direct_child_name>
 
 Question: Give me the direct children for <LEI>?
 SQLQuery: SELECT Entity_LegalName AS direct_child_name
-FROM EntityInformation ent
-JOIN Relationship_StartNode_NodeID rel ON ent.LEI = rel.Relationship_StartNode_NodeID
+FROM LEI_Entity_Details ent
+JOIN Relationship_Details rel ON ent.LEI = rel.Relationship_Details
 WHERE rel.Relationship_RelationshipType = 'IS_DIRECTLY_CONSOLIDATED_BY'
 AND rel.Relationship_EndNode_NodeID = LEI;
 
@@ -105,10 +105,10 @@ Answer: Direct child of <entity_name> are as <direct_child_name>
 
 Question: Give me the ultimate child for <entity name>?
 SQLQuery: SELECT Entity_LegalName AS ultimate_child_name
-FROM EntityInformation ent
-JOIN Relationship_StartNode_NodeID rel ON ent.LEI = rel.Relationship_StartNode_NodeID
+FROM LEI_Entity_Details ent
+JOIN Relationship_Details rel ON ent.LEI = rel.Relationship_Details
 WHERE rel.Relationship_RelationshipType = 'IS_ULTIMATELY_CONSOLIDATED_BY'
-AND rel.Relationship_EndNode_NodeID = (SELECT LEI FROM EntityInformation WHERE Entity_LegalName = 'A');
+AND rel.Relationship_EndNode_NodeID = (SELECT LEI FROM LEI_Entity_Details WHERE Entity_LegalName = 'A');
 
 SQLResult:
 ultimate_child_name         | avg_volte_accessibility
@@ -118,8 +118,8 @@ Answer: Direct child of <entity_name> are as <ultimate_child_name>
 
 Question: Give me the ultimate children for <LEI>?
 SQLQuery: SELECT Entity_LegalName AS ultimate_child_name
-FROM EntityInformation ent
-JOIN Relationship_StartNode_NodeID rel ON ent.LEI = rel.Relationship_StartNode_NodeID
+FROM LEI_Entity_Details ent
+JOIN Relationship_Details rel ON ent.LEI = rel.Relationship_Details
 WHERE rel.Relationship_RelationshipType = 'IS_ULTIMATELY_CONSOLIDATED_BY'
 AND rel.Relationship_EndNode_NodeID = LEI;
 

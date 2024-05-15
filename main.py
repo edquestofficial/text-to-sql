@@ -4,7 +4,7 @@ from src.get_table_info import get_tableinfo_with_index
 from src.sql import create_table_from_dataframe
 from src.query_pipeline import create_query_pipeline, prepare_query_pipeline
 from src.sql_obj_retriver import get_obj_retriver
-# from src.log_debug import start_log
+# from src.logging import start_log
 
 from config.dev.constants import TABLE_SUMMARY, TABLE_SCHEMA_PATH, TEXT_TO_SQL_PROMPT,ALL_DATA, REL_DATA, DATA_BASE_PATH, UI_TITLE
 from config.dev.secrets import LLM_KEY

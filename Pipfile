@@ -10,7 +10,7 @@ numpy= "*"
 # Visualize query pipeline
 pyvis = "*"
 llama-index = "*"
-phoenix = "*"
+arize-phoenix = "*"
 
 [dev-packages]
 

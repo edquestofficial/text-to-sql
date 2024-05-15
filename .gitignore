@@ -1,4 +1,4 @@
-*secrets*
+*config/*/secrets.py*
 *Pipfile.lock*
 *table_schema*
 *.db

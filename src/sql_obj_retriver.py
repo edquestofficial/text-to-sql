@@ -17,4 +17,4 @@ def get_obj_retriver(sql_database, table_infos):
         table_node_mapping,
         VectorStoreIndex,
     )
-    obj_retriever = obj_index.as_retriever(similarity_top_k=3)
+    return obj_index.as_retriever(similarity_top_k=3)
