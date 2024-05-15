@@ -1,0 +1,4 @@
+*secrets*
+*Pipfile.lock*
+*table_schema*
+*.db
