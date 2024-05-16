@@ -4,6 +4,7 @@
     <li>2: go inside main directory (text-to-sql)</li>
     <li>3: run below command: </li>
 </ul>
+
 ```bash 
 pipenv shell
 pipenv install
