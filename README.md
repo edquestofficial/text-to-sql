@@ -1,9 +1,9 @@
 # text-to-sql
-
-
-1: Take a clone from github
-2: go inside main directory (text-to-sql)
-3: run below command: 
+<ul>
+    <li>1: Take a clone from github</li>
+    <li>2: go inside main directory (text-to-sql)</li>
+    <li>3: run below command: </li>
+</ul>
 ```bash 
 pipenv shell
 pipenv install
