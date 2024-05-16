@@ -4,6 +4,7 @@ from src.get_table_info import get_tableinfo_with_index
 from src.sql import create_table_from_dataframe
 from src.query_pipeline import create_query_pipeline, prepare_query_pipeline
 from src.sql_obj_retriver import get_obj_retriver
+# from ui.index import launch_ui
 # from src.logging import start_log
 
 from config.dev.constants import TABLE_SUMMARY, TABLE_SCHEMA_PATH, TEXT_TO_SQL_PROMPT,ALL_DATA, REL_DATA, DATA_BASE_PATH, UI_TITLE
@@ -93,8 +94,8 @@ if __name__ == "__main__":
     df_rel = preprocess.get_processed_data(f"{DATA_BASE_PATH}{REL_DATA}")
     
     # List of dataframes
-    dfs = [df_lei.head(2), df_rel.head(2)] # for testing end-to-end
-    # dfs = [df_lei, df_rel]
+    # dfs = [df_lei.head(2), df_rel.head(2)] # for testing end-to-end
+    dfs = [df_lei, df_rel]
     
     # Set openAI key in enviorment variable
     os.environ["OPENAI_API_KEY"] = LLM_KEY
@@ -197,6 +198,7 @@ if __name__ == "__main__":
     # print(run_query(query, query))
     print("Query ran sucessfully........")
 
-    # Start UI
+    # Launch UI
+    # launch_ui()
     ui = gr.ChatInterface(fn=run_query, examples=QUERIES, title=UI_TITLE)
     ui.launch(debug=True, share=True)
