@@ -24,6 +24,6 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 7860
-
+ENV GRADIO_SERVER_NAME="0.0.0.0"
 # Run the main.py 
 CMD ["python", "main.py"]
