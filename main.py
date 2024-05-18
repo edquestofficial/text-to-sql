@@ -69,6 +69,10 @@ def parse_response_to_sql(response: ChatResponse) -> str:
 def get_table_context_str(table_schema_objs: List[SQLTableSchema]):
     """Get table context string."""
     context_strs = []
+    engine = create_engine("sqlite:///sql_db/gleif.db")
+    #Create SQL Database engine
+    sql_database = SQLDatabase(engine)
+
     for table_schema_obj in table_schema_objs:
         table_info = sql_database.get_single_table_info(
             table_schema_obj.table_name
@@ -88,25 +92,12 @@ def run_query(message, history):
     )
     return str(response)
 
-if __name__ == "__main__":
-    # Read Data from csv and preprocess data
-    df_lei = preprocess.get_processed_data(f"{DATA_BASE_PATH}{ALL_DATA}")
-    df_rel = preprocess.get_processed_data(f"{DATA_BASE_PATH}{REL_DATA}")
-    
-    # List of dataframes
-    # dfs = [df_lei.head(2), df_rel.head(2)] # for testing end-to-end
-    dfs = [df_lei, df_rel]
-    
-    # Set openAI key in enviorment variable
-    os.environ["OPENAI_API_KEY"] = LLM_KEY
-    
-    # create program instance of Llama index
-    program = create_program()
-    
+def get_table_schema(dfs):
     # initialize blank variables
     table_names = set()
     table_infos = []
-
+    # create program instance of Llama index
+    program = create_program()
     # Iterate dataframe list
     for idx, df in enumerate(dfs):
         table_info = get_tableinfo_with_index(idx)
@@ -137,10 +128,15 @@ if __name__ == "__main__":
             out_file = f"{TABLE_SCHEMA_PATH}/{idx}_{table_name}.json"
             #create .json file that contains table_name and table_summary
             json.dump(table_info.dict(), open(out_file, "w"))
-        table_infos.append(table_info)
 
+        table_infos.append(table_info)
+    
     # update table info summary
     table_infos[1].table_summary = TABLE_SUMMARY
+    return table_infos
+
+def data_insertion_process(dfs):
+    # Set openAI key in enviorment variable
     engine = create_engine("sqlite:///sql_db/gleif.db")
     metadata_obj = MetaData()
     for idx, df in enumerate(dfs):
@@ -148,9 +144,9 @@ if __name__ == "__main__":
         print(f"Creating table: {tableinfo.table_name}")
         create_table_from_dataframe(df, tableinfo.table_name, engine, metadata_obj)
 
-    # setup Arize Phoenix for logging/observability
-    # start_log()
-    
+def create_and_prepare_query_pipeline(table_infos):
+    engine = create_engine("sqlite:///sql_db/gleif.db")
+
     #Create SQL Database engine
     sql_database = SQLDatabase(engine)
     obj_retriever = get_obj_retriver(sql_database, table_infos)
@@ -186,6 +182,24 @@ if __name__ == "__main__":
     
     # Prepare query pipeline
     qp = prepare_query_pipeline(qp)
+    return qp
+
+
+if __name__ == "__main__":
+    # os.environ["OPENAI_API_KEY"] = LLM_KEY
+    # Read Data from csv and preprocess data
+    df_lei = preprocess.get_processed_data(f"{DATA_BASE_PATH}{ALL_DATA}")
+    df_rel = preprocess.get_processed_data(f"{DATA_BASE_PATH}{REL_DATA}")
+    
+    # List of dataframes
+    dfs = [df_lei.head(2), df_rel.head(2)] # for testing end-to-end
+    # dfs = [df_lei, df_rel]
+
+    table_infos = get_table_schema(dfs)
+    # data_insertion_process(dfs)
+
+    # Create and prepare query pipeline
+    qp= create_and_prepare_query_pipeline(table_infos)
     
     # pick query from constants
     query = random.choice(QUERIES) # What is the legal address of <entity name>?
@@ -201,4 +215,4 @@ if __name__ == "__main__":
     # Launch UI
     # launch_ui()
     ui = gr.ChatInterface(fn=run_query, examples=QUERIES, title=UI_TITLE)
-    ui.launch(debug=True, share=True)
+    ui.launch(server_name="0.0.0.0", server_port=7860, debug=True, share=True)

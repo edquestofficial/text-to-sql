@@ -1,0 +1,6 @@
+gradio
+pandas
+numpy
+pyvis
+llama-index
+arize-phoenix
