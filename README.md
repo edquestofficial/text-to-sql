@@ -28,11 +28,11 @@ Pass openAI key in docker run command
 2.2: docker run -it --network=host -p 7860:7860 -e OPENAI_API_KEY=<your-openai-api-key> text-to-sql
 2.2: docker run -it --network=host -p 7860:7860 -e text-to-sql
 List of running containers:
-docker ps -a
+    docker ps -a
 Go inside the container
- docker exec -it 50ca7c177bdd /bin/bash
-open any file:
-    cat filename
+    docker exec -it 50ca7c177bdd /bin/bash
+    open any file:
+        cat filename
 Stop docker container:
     docker stop container_id_or_name
     docker stop $(docker ps -q)
@@ -44,3 +44,7 @@ Delete Docker Images
     docker rmi image_id_or_name
     docker image prune
     docker system prune
+Docker image Push:
+    docker tag text-to-sql rmnchopra91/gen-ai_text-to-sql:0.0.1
+    docker push rmnchopra91/gen-ai_text-to-sql:0.0.2
+
